@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Audiolist</title>
+	<script src="/scripts/react.min.js"></script>
+    <script src="/scripts/react-dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+	<div id="content"></div>
+	<script type="text/javascript">
+		
+	</script>
+	<script type="text/babel">
+		var EditAudioBox = React.createClass({
+			render: function() {
+				return (
+					<div>
+					<form action="/editaudio" method="POST" encType="multipart/form-data" name="edit" id="editAudio">
+						<h1>Изменить аудиофайл</h1>
+						<input type="text" name="id" className="idAudio" hidden />
+						<input type="text" name="title" placeholder="Название" required />
+						<textarea name="descr" id="textarea_descr" placeholder="Описание" cols="30" rows="10" required ></textarea>
+						<input type="submit" value={"ИЗМЕНИТЬ"} /><br /><br />
+						<a href="" id="delAudioLink">Удалить аудиозапись</a>
+						<button form="" className="cancelEdit">ОТМЕНА</button>
+					</form>
+					</div>
+				);
+			}
+		});
+		var SendFileBox = React.createClass({
+			render: function() {
+				return (
+					<div className="sendFileBox">
+						<button className="addAudio green"><div className="plus">+</div></button>
+						<form action="addaudio" method="POST" encType="multipart/form-data" name="upload" id="upload">
+							<h1>Добавить аудиофайл</h1>
+							<input type="text" name="title" placeholder="Название" required />
+							<textarea name="descr" id="textarea_descr" placeholder="Описание" cols="30" rows="10" required ></textarea>
+							<div className="fileBlock">
+								<input type="file" id="f1" name="image" accept="image/jpeg,image/png" />
+								<input type="file" id="f2" name="audio" accept="audio/mpeg,audio/mp3" />
+								<div className={"addImageFile emptyFile"}>ИЗОБРАЖЕНИЕ</div>
+								<div className={"addAudioFile emptyFile"}>АУДИОФАЙЛ</div>
+							</div>
+							<input type="submit" value={"ЗАГРУЗИТЬ"} />
+						</form>
+						<div id="screenBlocker"></div>
+					</div>
+				);
+			}
+		});
+		var AudioList = React.createClass({
+			render: function() {
+				var audiolisting = this.props.data.map(function(audios) {
+					return(
+						<div className="audioMainBlock">
+							<div className="audioMiniBlock">
+								<div className="audioImg"><img width="55" height="55" src={"/files/images/" + audios.filename + "." + audios.image_extension} /></div>		
+								<div className="textBox" name={audios._id}>
+									<div className="audioTitle">{audios.title}</div>
+									<div className="audioDescr">{audios.descr}</div>
+								</div>
+								<div><audio className="notPlayed" id={"www"} src={"/files/audio/"+ audios.filename +".mp3"} preload="none"></audio></div>
+							</div>
+							<div className="audioPlay"></div>
+							<div className="audioControl">
+								<div className="audioEdit">
+									<img src="/files/images/edit.png" width="60" alt="Изменить" />
+								</div>
+							</div>
+						</div>
+					);
+				});
+				return (
+					<div className="audioList">
+						{audiolisting}
+					</div>
+				);
+			}
+		});
+		var MainBox = React.createClass({
+			loadAudioListFromServer: function() {
+				$.ajax({
+					url: this.props.url,
+					dataType: 'json',
+					cache: false,
+					success: function(data) {
+						this.setState({data: data});
+					}.bind(this),
+					error: function(xhr, status, err) {
+						console.error(this.props.url, status, err.toString());
+					}.bind(this)
+				});
+			},
+			getInitialState: function() {
+				return {data: []};
+			},
+			componentDidMount: function() {
+				this.loadAudioListFromServer();
+			},
+			render: function(){
+				return (
+					<div className="mainBox">
+						<AudioList data={this.state.data} />
+						<SendFileBox />
+						<EditAudioBox />
+					</div>
+				);
+			}
+		});
+		ReactDOM.render(
+			<MainBox url="/getaudiolist" />,
+			document.getElementById('content'),
+			function() {
+				$("#f1").change(function() {
+					if (this.files.length == 1) {
+						$(".addImageFile").addClass("notEmptyFile");
+						$(".addImageFile").removeClass("emptyFile");
+						$(".addImageFile").html(this.files[0].name);
+					}
+				});
+				$("#f2").change(function() {
+					if (this.files.length == 1) {
+						$(".addAudioFile").addClass("notEmptyFile");
+						$(".addAudioFile").removeClass("emptyFile");
+						$(".addAudioFile").html(this.files[0].name);
+					}
+				});
+			}
+		);
+	</script>
+	<script type="text/javascript">
+		$(function() {
+			var playedAlready = false; 
+			var playedAlreadyObj = undefined;
+			$(document).on("click", ".audioMiniBlock", function() {
+				$(this).parent().find(".audioPlay").trigger("click");
+			});
+
+			// Управление воспроизведением
+			var playedAlready = false;
+			var playedAlreadyBlock = undefined;
+			$(document).on("click", ".audioPlay", function() {
+
+				var pausePlay = function(player) {
+					playedAlready = false;
+					$(player).find("audio")[0].pause();
+					$(player).find(".audioImg").addClass("notPlayed").removeClass("played");
+				};
+				var goPlay = function(player) {
+					playedAlready = true;
+					playedAlreadyBlock = player;
+					$(player).find("audio")[0].play();
+					$(player).find(".audioImg").addClass("played").removeClass("notPlayed");
+					$(player).find("audio")[0].onended = () => {stopPlay(player);}
+				};
+				var stopPlay = (player) => {
+					pausePlay(player);
+					$(player).find("audio")[0].currentTime = 0;
+				}
+
+				if (typeof playedAlreadyBlock == 'undefined' || playedAlreadyBlock != $(this).parent()[0]) {
+					if (typeof playedAlreadyBlock != 'undefined') stopPlay(playedAlreadyBlock);
+					goPlay($(this).parent()[0]);
+				} else if (playedAlready && playedAlreadyBlock == $(this).parent()[0]) {
+					pausePlay($(this).parent()[0]);
+				} else {
+					goPlay($(this).parent()[0]);
+				}
+			});
+			// Конец управления воспроизведением
+
+			$(document).on("click", ".addAudio", function() {
+				if ($(".addAudio div").hasClass('plus')) {
+					$(".addAudio div").html('-');
+				} else {
+					$(".addAudio div").html('+');
+				}
+				$("#screenBlocker").toggle();
+				$("#upload").toggle();
+				$(".addAudio div").toggleClass('plus minus');
+				$(".addAudio").toggleClass('green red');
+			});
+			$(document).on("click", ".cancelEdit", function() {
+				$("#screenBlocker").toggle();
+				$("#editAudio").toggle();
+				$(".addAudio").toggle();
+			});
+			$(document).on("click", ".addImageFile", function() {
+				$("#upload input[type=file]#f1").trigger("click");
+			});
+			$(document).on("click", ".addAudioFile", function() {
+				$("#upload input[type=file]#f2").trigger("click");
+			});
+			$(document).on("click", ".audioEdit", function() {
+				let parent = $(this).parents()[1];
+				$("#editAudio input[type=text]").val($(parent).find(".audioTitle").html());
+				$("#editAudio textarea").text($(parent).find(".audioDescr").html());
+				$("#delAudioLink").attr("href", "/del/"+$(parent).find(".textBox").attr("name"));
+				$(".idAudio").val($(parent).find(".textBox").attr("name"));
+				$("#screenBlocker").toggle();
+				$("#editAudio").toggle();
+				$(".addAudio").toggle();
+			});
+			$(document).on("mouseover", ".audioMainBlock", function() {
+				$(this).find(".audioEdit").css("display", "block");
+			});
+			$(document).on("mouseout", ".audioMainBlock", function() {
+				$(this).find(".audioEdit").css("display", "none");
+			});
+		});
+	</script>
+</body>
+</html>

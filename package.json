@@ -1,0 +1,20 @@
+{
+  "name": "mediamarket",
+  "version": "0.0.1",
+  "description": "empty",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.15.3",
+    "mongodb": "^2.2.27",
+    "multer": "^1.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "beglum",
+  "license": ""
+}

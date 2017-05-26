@@ -1,0 +1,358 @@
+@import url('https://fonts.googleapis.com/css?family=Lobster|Roboto&subset=cyrillic,cyrillic-ext');
+* {
+	font-size: 16px;
+	box-sizing: border-box;
+	font-family: 'Roboto', sans-serif;
+}
+h1 {
+	font-family: 'Lobster', cursive;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+}
+body {
+	padding: 0;
+	margin: 0;
+}
+.audioImg, .textBox {
+	margin-left: 20px;
+}
+.audioImg img {
+	width: 55px;
+	border-radius: 3px;
+}
+.audioImg {
+	position: relative;
+}
+.mainBox {
+	width: 100%;
+	max-width: 900px;
+	margin: 0 auto;
+	padding-top: 50px;
+}
+.audioMiniBlock {
+	display: flex;
+	min-height: 72px;
+    max-width: 828px;
+    width: 100%;
+}
+.played::after {
+	content: '♪';
+	position: absolute;	
+	text-align: center;
+	z-index: 1;
+	font-size: 33px;
+	padding-top: 9px;
+	box-sizing: border-box;
+	left: 0;
+	color: white;
+	width: 55px;
+	height: 55px;
+	border-radius: 3px;
+	background-color: rgba(0,0,0,0.4);
+}
+.played:hover::after {
+    content: '■';
+    padding-top: 0;
+    vertical-align: center;
+    font-size: 40px;
+}
+.audioMiniBlock {
+	position: relative;
+	cursor: pointer;
+	padding: 8px 0 5px 0;
+}
+.audioTitle {
+	font-size: 1.3em;
+	max-width: 500px;
+	width: 100%;
+}
+.audioDescr {
+    max-width: 500px;
+    width: 100%;
+    word-wrap: break-word;
+}
+.addAudio, .cancelEdit {
+	height: 50px;
+	padding-top: 7px;
+	cursor: pointer;
+	width: 400px;
+	border: none;
+	outline: none;
+	display: block;
+	z-index: 2;
+	position: fixed;
+	bottom: 20px;
+	left: calc(50% - 200px);
+	border-radius: 3px;
+}
+.addAudio > div {
+	display: inline-block;
+	color: #eee;
+	font-weight: 700;
+	text-align: center;
+	-o-transition: transform 0.25s linear;
+	-ms-transition: transform 0.25s linear;
+	-moz-transition: transform 0.25s linear;
+	-webkit-transition: transform 0.25s linear;
+	transition: transform 0.25s linear;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+}
+
+.addAudio:hover > div {
+	-o-transform: rotate(0.5turn);
+	-ms-transform: rotate(0.5turn);
+	-moz-transform: rotate(0.5turn);
+	-webkit-transform: rotate(0.5turn);
+	transform: rotate(0.5turn);
+}
+.sendFileBox {
+	margin-top: 50px;
+}
+.minus {
+	height: 17px;
+    width: 14px;
+    padding-top: 6px;
+    line-height: 0;
+    font-size: 2.8em;
+    margin-top: 3px;
+}
+.plus {
+	height: 22px;
+    width: 22px;
+    line-height: 0.57;
+	font-size: 2.3em;
+}
+.green {
+	background-color: #53ab53;
+}
+.red {
+	background-color: #ab5353;
+}
+#screenBlocker {
+	width: 100vw;
+	height: 100vh;
+	top: 0;
+	left: 0;
+	position: fixed;
+	display: none;
+	background-color: rgba(0, 0, 0, 0.88);
+	z-index: 1;
+}
+#upload, #editAudio {
+	margin-top: 20px;
+	position: fixed;
+	z-index: 30;
+	top: 70px;
+	left: calc(50% - 250px);
+	width: 500px;
+	background-color: #efefef;
+	padding: 10px 10px 40px 10px;
+	border-radius: 3px;
+	display: none;
+}
+#upload input, #editAudio input {
+	font-size: 1.2em;
+	height: 40px;
+}
+#upload input[type="text"], #editAudio input[type="text"] {
+	margin-bottom: 8px;
+}
+#upload textarea, #editAudio textarea {
+	width: 100%;
+	height: 100px;
+	font-size: 1.25em;
+	resize: vertical;
+	max-height: 260px;
+	margin-bottom: 5px;
+}
+#upload input[type="file"] {
+	display: none;
+}
+#upload input[type="submit"], #editAudio input[type="submit"] {
+	height: 40px;
+	cursor: pointer;
+	background-color: #53ab53;
+	border: none;
+	color: #eee;
+}
+#upload input[type="submit"]:hover, #editAudio input[type="submit"]:hover {
+	background-color: #7ac17a;
+}
+#upload input, #upload textarea, #editAudio input, #editAudio textarea {
+	outline: none;
+	width: 80%;
+	border-radius: 3px;
+	border: 1px solid #bbb;
+	position: relative;
+	left: 10%;
+	color: #555;
+}
+#upload input[type="text"], #upload textarea, #editAudio input[type="text"], #editAudio textarea {
+	padding-left: 5px;
+	padding-top: 2px;
+}
+#upload input[type="text"]::-webkit-input-placeholder, 
+#upload textarea::-webkit-input-placeholder,
+#editAudio input[type="text"]::-webkit-input-placeholder, 
+#editAudio textarea::-webkit-input-placeholder  {
+	color: rgba(0,0,0,0.2);
+}
+#upload input[type="text"]::-moz-placeholder, 
+#upload textarea::-moz-placeholder,
+#editAudio input[type="text"]::-moz-placeholder, 
+#editAudio textarea::-moz-placeholder {
+	color: rgba(0,0,0,0.2);
+}
+#upload input[type="text"]:-ms-input-placeholder, 
+#upload textarea:-ms-input-placeholder,
+#editAudio input[type="text"]:-ms-input-placeholder, 
+#editAudio textarea:-ms-input-placeholder {
+	color: rgba(0,0,0,0.2);
+}
+#upload input[type="text"]:focus::-webkit-input-placeholder, 
+#upload textarea:focus::-webkit-input-placeholder,
+#editAudio input[type="text"]:focus::-webkit-input-placeholder, 
+#editAudio textarea:focus::-webkit-input-placeholder {
+	color: transparent;
+}
+#upload input[type="text"]:focus::-moz-placeholder, 
+#upload textarea:focus::-moz-placeholder,
+#editAudio input[type="text"]:focus::-moz-placeholder, 
+#editAudio textarea:focus::-moz-placeholder {
+	color: transparent;
+}
+#upload input[type="text"]:focus:-ms-input-placeholder, 
+#upload textarea:focus:-ms-input-placeholder,
+#editAudio input[type="text"]:focus:-ms-input-placeholder, 
+#editAudio textarea:focus:-ms-input-placeholder {
+	color: transparent;
+}
+#upload h1, #editAudio h1 {
+	color: #555;
+	font-weight: 300;
+	font-size: 1.8em;
+	margin-left: 50px;
+	margin-bottom: 5px;
+}
+.fileBlock {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	margin-bottom: 10px;
+	width: 80%;
+	position: relative;
+	left: 10%;
+}
+.fileBlock div[class^="add"]:first-of-type {
+	margin-right: 10px;
+}
+.fileBlock div[class^="add"] {
+	width: 195px;
+	height: 40px;
+	cursor: pointer;
+	text-align: center;
+	font-size: 1.2em;
+	padding: 9px 5px 0 5px;
+	color: #eee;
+	border-radius: 3px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+}
+.emptyFile {
+	background-color: #ab5353;
+}
+.notEmptyFile {
+	background-color: #53ab53;
+}
+.notEmptyFile:hover {
+	background-color: #7ac17a;	
+}
+.audioMainBlock {
+	display: flex;
+	justify-content: space-between;
+	background-color: #fefefe;
+}
+.audioMainBlock:nth-of-type(2n+1) {
+	background-color: #f7f7f7;
+}
+.audioMainBlock:hover {
+	background-color: rgba(0,0,0,0.1);
+}
+.audioControl {
+	min-width: 72px;
+	max-width: 72px;
+}
+#content {
+	padding-bottom: 60px;
+}
+.audioEdit {
+	width: 72px;
+	height: 72px;
+	background-color: #98c398;
+	padding-top: 6px;
+	padding-left: 4px;
+	cursor: pointer;
+	display: none;
+}
+.audioEdit:hover {
+	background-color: #53ab53;
+}
+#delAudioLink {
+	text-decoration: none;
+	color: #757575;
+	position: relative;
+	display: inline-block;
+    width: 165px;
+    left: calc(50% - 85px);
+}
+#delAudioLink:hover {
+	color: #4678a5;
+}
+.cancelEdit {
+	background-color: #ab5353;
+	font-size: 1.4em;
+	color: #fff;
+	padding: 0;
+}
+@media screen and (max-width: 850px) {
+	.addAudio, #upload, .cancelEdit, #editAudio {
+		position: relative;
+		margin-top: 0;
+	}
+	#upload {
+		top: 0;
+	}
+	#editAudio {
+		position: absolute;
+		top: 0;
+		padding: 0;
+	}
+	#editAudio h1 {
+		margin-left: 10px;
+	}
+}
+@media screen and (max-width: 480px) {
+	.mainBox {
+		padding-top: 25px;
+	}
+	.addAudio, #upload, #editAudio {
+		width: 100%;
+		left: 0;
+		border-radius: 0;
+	}
+	#content {
+		padding-bottom: 20px;
+	}
+	.cancelEdit {
+		width: 80%;
+    	left: 10%;
+	}
+}
